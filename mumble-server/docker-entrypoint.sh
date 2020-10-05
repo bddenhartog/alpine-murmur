@@ -4,14 +4,21 @@ set -e
 CONFIGFILE="/etc/murmur/murmur.ini"
 ICEFILE="/etc/murmur/ice.ini"
 WELCOMEFILE="/data/welcometext"
+CUSTOM_CONFIG_FILE="/data/murmur.ini"
 
 setVal() {
     if [ -n "${1}" ] && [ -n "${2}" ]; then
         echo "update setting: ${1} with: ${2}"
-        sed -i -E 's;#?('"${1}"'=).*;\1'"${2}"';' "${CONFIGFILE}"
+        tmp=$(echo $2 | sed 's,\\,\\\\,g') # Double every \ for next sed
+        sed -i -E 's;#?('"${1}"'=).*;\1'"${tmp}"';' "${CONFIGFILE}"
     fi
 }
 
+setVal database "${MUMBLE_DATABASE}"
+setVal dbDriver "${MUMBLE_DB_DRIVER}"
+setVal dbUsername "${MUMBLE_DB_USERNAME}"
+setVal dbPassword "${MUMBLE_DB_PASSWORD}"
+setVal dbHost "${MUMBLE_DB_HOST}"
 setVal ice "${MUMBLE_ICE}"
 setVal icesecretread "${MUMBLE_ICESECRETREAD}"
 setVal icesecretwrite "${MUMBLE_ICESECRETWRITE}"
@@ -47,6 +54,8 @@ setVal registerName "${MUMBLE_REGISTERNAME}"
 setVal suggestVersion "${MUMBLE_SUGGESTVERSION}"
 setVal suggestPositional "${MUMBLE_SUGGESTPOSITIONAL}"
 setVal suggestPushToTalk "${MUMBLE_SUGGESTPUSHTOTALK}"
+setVal welcometext "${MUMBLE_WELCOMETEXT}"
+
 
 if [ -n "${MUMBLE_ENABLESSL}" ] && [ "${MUMBLE_ENABLESSL}" -eq 1 ]; then
     SSL_CERTFILE=${MUMBLE_CERTFILE:-/data/cert.pem}
@@ -86,14 +95,8 @@ fi
 
 chown -R murmur:nobody /data/
 
-if [ ! -f /data/murmur.sqlite ]; then
-    if [ -z "${SUPERUSER_PASSWORD+x}" ]; then
-        SUPERUSER_PASSWORD=$(pwgen -cns1 36)
-    fi
-
-    echo "SUPERUSER_PASSWORD: $SUPERUSER_PASSWORD"
-
-    /opt/murmur/murmur.x86 -ini "${CONFIGFILE}" -supw "$SUPERUSER_PASSWORD"
+if [ -f "${CUSTOM_CONFIG_FILE}" ]; then
+    CONFIGFILE="${CUSTOM_CONFIG_FILE}"
 fi
 
 # Run murmur if not in debug mode

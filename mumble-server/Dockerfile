@@ -10,6 +10,7 @@ COPY ./docker-entrypoint.sh /usr/local/bin/
 RUN apk --no-cache add \
         pwgen \
         libressl \
+        qt5-qtbase-mysql \
     && adduser -SDH murmur \
     && mkdir -p \
         /data \

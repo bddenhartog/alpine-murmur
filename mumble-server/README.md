@@ -89,6 +89,10 @@ Here is a list of all options supported through environment variables:
 | [`MUMBLE_AUTOBANTIME`][mdoc-group-autoban] | `300` |
 | [`MUMBLE_BANDWIDTH`][mdoc-bandwidth] | `7200`|
 | [`MUMBLE_CHANNELNAME`][mdoc-group-channelusername] | `[ \\-=\\w\\#\\[\\]\\{\\}\\(\\)\\@\\|]+` |
+| [`MUMBLE_DATABASE`][mdoc-group-database] | `/data/murmur.sqlite` |
+| [`MUMBLE_DB_DRIVER`][mdoc-group-database] | `QSQLITE` |
+| [`MUMBLE_DB_USERNAME`][mdoc-group-database] | `---` |
+| [`MUMBLE_DB_PASSWORD`][mdoc-group-database] | `---` |
 | [`MUMBLE_DEFAULTCHANNEL`][mdoc-defaultchannel] | `---` |
 | [`MUMBLE_ENABLESSL`](#ssl-certificates-murmurinissl) | `0` |
 | [`MUMBLE_ICE`][mdoc-ice] | `tcp -h 127.0.0.1 -p 6502` |
@@ -118,14 +122,21 @@ Here is a list of all options supported through environment variables:
 | [`MUMBLE_USERNAME`][mdoc-group-channelusername] | `[-=\\w\\[\\]\\{\\}\\(\\)\\@\\|\\.]+` |
 | [`MUMBLE_USERS`][mdoc-users] | `100` |
 | [`MUMBLE_USERSPERCHANNEL`][mdoc-usersperchannel] | `0` |
+| [`MUMBLE_WELCOMETEXT`][mdoc-welcometext] | `<br />Welcome...` |
 | `SUPERUSER_PASSWORD` | If not defined, a password will be auto-generated. |
 
 ### Custom welcome text ([Murmur.ini::welcometext][mdoc-welcometext])
 
-To customize the welcome text, add the contents to `welcometext` and mount that
+If the environnement variable `MUMBLE_WELCOMETEXT` will produce to big config for you, 
+you can customize the welcome text with a separate file.
+Add the contents to `welcometext` and mount that
 into the container at `/data/welcometext`. Double quote characters (`"`) are
 escaped automatically, but you may want to confirm that your message was parsed
 correctly.
+
+### Custom configuration file
+If you want to use a fully set murmur configuration file, 
+you can mount the file into the container at `/data/murmur.ini`
 
 ### SSL Certificates ([Murmur.ini::SSL][mdoc-sslcertkey])
 
@@ -239,6 +250,7 @@ Numbered tags follow the pattern:
 [mdoc-suggestPushToTalk]: https://wiki.mumble.info/wiki/Murmur.ini#suggestPushToTalk
 [mdoc-sslcertkey]: https://wiki.mumble.info/wiki/Murmur.ini#sslCert_and_sslKey
 [mdoc-sslCiphers]: https://wiki.mumble.info/wiki/Murmur.ini#sslCiphers
+[mdoc-group-database]: https://wiki.mumble.info/wiki/Murmur.ini#Database_Configuration
 [mdoc-ratelimit]: https://wiki.mumble.info/wiki/Murmur.ini#messagelimit_and_messageburst
 [issues/96]: https://github.com/sudoforge/docker-images/issues/96
 [tags]: https://hub.docker.com/r/sudoforge/mumble-server/tags "image tags"
